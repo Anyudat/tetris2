@@ -1,0 +1,52 @@
+body{
+    background-color: gray;
+}
+
+h1{
+    text-align: center;
+    color: white;
+}
+
+#text{
+    position: absolute;
+    font-size: clamp(1rem, 1vw, 2rem);
+    text-align: center;
+    background-color: black;
+    color: white;
+    border: 2px solid white;
+}
+
+#container{
+    position: absolute;
+    background-color: black;
+    border: 2px solid white;
+}
+
+#nextShapeContainer{
+    position: relative;
+    left: 0;
+    top: 0;
+    margin: auto;
+}
+
+#placingContainer{
+    position: absolute;
+    margin: 2px;
+    opacity: 0.2;
+}
+
+#pauseMenu{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    color: red;
+    font-size: xx-large;
+    display: none;
+}
+
+.cell{
+    border: 2px solid white;
+    position: absolute;
+    border-radius: 20% 20% 20% 20%;
+}
