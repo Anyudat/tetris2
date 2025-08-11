@@ -140,12 +140,6 @@ function updatePlacingShape(){
     }
 }
 
-function placeShapeImmediately(){
-    while(!shapeCollision('down', 'up')){
-        moveShape('down');
-    }
-}
-
 shapes.push(createShape(Object.keys(SHAPECOORDS)[Math.round(Math.random() * (Object.keys(SHAPECOORDS).length - 1))], colors[Math.round(Math.random() * (colors.length - 1))]));
 currentShapeIndex = 0;
 createNextShape();
@@ -393,19 +387,7 @@ function game() {
                 if (!shapeCollision('down', 'up')) {
                     moveShape('down');
                 } else {
-                    let fullLines = checkFullLine();
-                    if (fullLines.length > 0) {
-                        clearLines(fullLines);
-                    }
-                    shapes.push(createShape(nextShapeType, nextShapeColor));
-                    currentShapeIndex = shapes.length - 1;
-                    createNextShape();
-                    if (shapeCollides()) {
-                        running = false;
-                    }
-                    else{
-                        updatePlacingShape();
-                    }
+                    placeShape();
                 }
             }
             else{
@@ -413,6 +395,29 @@ function game() {
             }
         }
     }, GAMESPEED);
+}
+
+function placeShapeImmediately(){
+    while(!shapeCollision('down', 'up')){
+        moveShape('down');
+    }
+    placeShape();
+}
+
+function placeShape(){
+    let fullLines = checkFullLine();
+    if (fullLines.length > 0) {
+        clearLines(fullLines);
+    }
+    shapes.push(createShape(nextShapeType, nextShapeColor));
+    currentShapeIndex = shapes.length - 1;
+    createNextShape();
+    if (shapeCollides()) {
+        running = false;
+    }
+    else{
+        updatePlacingShape();
+    }
 }
 
 function gameOver() {
@@ -425,7 +430,7 @@ function gameOver() {
         CONTAINER.removeChild(CONTAINER.lastChild);
     }
     shapes.push(createShape(Object.keys(SHAPECOORDS)[Math.round(Math.random() * (Object.keys(SHAPECOORDS).length - 1))], colors[Math.round(Math.random() * (colors.length - 1))]));
-    currentShapeIndex = shapes.length - 1;
+    currentShapeIndex = 0;
     createNextShape();
     createPlacingShape();
     updatePlacingShape();
