@@ -22,7 +22,7 @@ let gameLoop;
 let level = 1;
 let points = 0;
 
-let cellSize;
+let cellSize = {"width" : parseFloat(100 / WIDTH), "height" : parseFloat(100 / HEIGHT)};
 let currentShapeIndex;
 
 let nextShape;
@@ -31,17 +31,14 @@ let nextShapeColor;
 
 let placingShape;
 
-cellSize = CONTAINER.clientWidth / WIDTH;
-cellSize = parseFloat(CONTAINER.clientWidth / WIDTH);
-
 let SHAPECOORDS = {
-    'i': [[0, 0], [0, cellSize], [0, 2 * cellSize], [0, 3 * cellSize]],
-    'o': [[0, 0], [0, cellSize], [cellSize, 0], [cellSize, cellSize]],
-    's': [[0, 0], [0, cellSize], [cellSize, 0], [-cellSize, cellSize]],
-    'z': [[0, 0], [0, cellSize], [-cellSize, 0], [cellSize, cellSize]],
-    'l': [[0, 0], [0, cellSize], [0, 2 * cellSize], [cellSize, 2 * cellSize]],
-    'j': [[0, 0], [0, cellSize], [0, 2 * cellSize], [-cellSize, 2 * cellSize]],
-    't': [[0, cellSize], [0, 0], [-cellSize, 0], [cellSize, 0]],
+    'i': [[0, 0], [0, cellSize["height"]], [0, 2 * cellSize["height"]], [0, 3 * cellSize["height"]]],
+    'o': [[0, 0], [0, cellSize["height"]], [cellSize["width"], 0],      [cellSize["width"], cellSize["height"]]],
+    's': [[0, 0], [0, cellSize["height"]], [cellSize["width"], 0],      [-cellSize["width"], cellSize["height"]]],
+    'z': [[0, 0], [0, cellSize["height"]], [-cellSize["width"], 0],     [cellSize["width"], cellSize["height"]]],
+    'l': [[0, 0], [0, cellSize["height"]], [0, 2 * cellSize["height"]], [cellSize["width"], 2 * cellSize["height"]]],
+    'j': [[0, 0], [0, cellSize["height"]], [0, 2 * cellSize["height"]], [-cellSize["width"], 2 * cellSize["height"]]],
+    't': [[0, cellSize["height"]], [0, 0], [-cellSize["width"], 0],     [cellSize["width"], 0]],
 };
 
 function createShape(shapeType, color, x = 5, y = 1, container = CONTAINER) {
@@ -50,18 +47,18 @@ function createShape(shapeType, color, x = 5, y = 1, container = CONTAINER) {
     for (i = 0; i < 4; i++) {
         currCell = document.createElement('div');
         currCell.classList.add('cell');
-        currCell.style.width = cellSize - borderSize + "px";
-        currCell.style.height = cellSize - borderSize + "px";
+        currCell.style.width = cellSize["width"] + "%";
+        currCell.style.height = cellSize["height"] + "%";
         currCell.style.backgroundColor = color;
-        currCell.style.left = x * cellSize + SHAPECOORDS[shapeType][i][0] + "px";
-        currCell.style.top = y * cellSize + SHAPECOORDS[shapeType][i][1] + "px";
+        currCell.style.left = x * cellSize["width"] + SHAPECOORDS[shapeType][i][0] + "%";
+        currCell.style.top = y * cellSize["height"] + SHAPECOORDS[shapeType][i][1] + "%";
 
         shape['cells'][i] = {};
         shape['cells'][i]['coords'] = [];
 
         shape['cells'][i]['div'] = currCell;
-        shape['cells'][i]['coords'][0] = x + SHAPECOORDS[shapeType][i][0] / cellSize;
-        shape['cells'][i]['coords'][1] = y + SHAPECOORDS[shapeType][i][1] / cellSize;
+        shape['cells'][i]['coords'][0] = x + SHAPECOORDS[shapeType][i][0] / cellSize["width"];
+        shape['cells'][i]['coords'][1] = y + SHAPECOORDS[shapeType][i][1] / cellSize["height"];
         shape['type'] = shapeType;
         shape['color'] = color;
 
@@ -76,9 +73,7 @@ function createNextShape() {
     }
     nextShapeType = Object.keys(SHAPECOORDS)[Math.round(Math.random() * (Object.keys(SHAPECOORDS).length - 1))];
     nextShapeColor = colors[Math.round(Math.random() * (colors.length - 1))];
-    let nextShapeX = parseFloat(NEXTSHAPECONTAINER.style.left.slice(0, NEXTSHAPECONTAINER.style.left.length - 2)) / cellSize;
-    let nextShapeY = parseFloat(NEXTSHAPECONTAINER.style.top.slice(0, NEXTSHAPECONTAINER.style.top.length - 2)) / cellSize;
-    nextShape = createShape(nextShapeType, nextShapeColor, nextShapeX + 2, nextShapeY, NEXTSHAPECONTAINER);
+    nextShape = createShape(nextShapeType, nextShapeColor, 5, 5, NEXTSHAPECONTAINER);
 }
 
 function createPlacingShape(){
@@ -95,7 +90,7 @@ function updatePlacingShape(){
     let lowestCoords = [];
 
     for (i = 0; i < shapes[currentShapeIndex]['cells'].length; i++){
-        currentCoords.push([shapes[currentShapeIndex]['cells'][i]['coords'][0],shapes[currentShapeIndex]['cells'][i]['coords'][1]]);
+        currentCoords.push([shapes[currentShapeIndex]['cells'][i]['coords'][0], shapes[currentShapeIndex]['cells'][i]['coords'][1]]);
     }
 
     while (!shapeCollision('down', 'up')){
@@ -108,11 +103,11 @@ function updatePlacingShape(){
 
     for (k = 0; k < currentCoords.length; k++){
         shapes[currentShapeIndex]['cells'][k]['coords'] = currentCoords[k];
-        shapes[currentShapeIndex]['cells'][k]['div'].style.left = shapes[currentShapeIndex]['cells'][k]['coords'][0] * cellSize + "px";
-        shapes[currentShapeIndex]['cells'][k]['div'].style.top = shapes[currentShapeIndex]['cells'][k]['coords'][1] * cellSize + "px";
+        shapes[currentShapeIndex]['cells'][k]['div'].style.left = shapes[currentShapeIndex]['cells'][k]['coords'][0] * cellSize["width"] + "%";
+        shapes[currentShapeIndex]['cells'][k]['div'].style.top = shapes[currentShapeIndex]['cells'][k]['coords'][1] * cellSize["height"] + "%";
 
-        placingShape['cells'][k]['div'].style.left = lowestCoords[k][0] * cellSize + "px";
-        placingShape['cells'][k]['div'].style.top = lowestCoords[k][1] * cellSize + "px";
+        placingShape['cells'][k]['div'].style.left = lowestCoords[k][0] * cellSize["width"] + "%";
+        placingShape['cells'][k]['div'].style.top = lowestCoords[k][1] * cellSize["height"] + "%";
         placingShape['cells'][k]['div'].style.backgroundColor = shapes[currentShapeIndex]['color'];
     }
 }
@@ -124,7 +119,6 @@ createPlacingShape();
 updatePlacingShape();
 
 window.addEventListener('keydown', (event) => {
-    // run the game
     if (event.key == ' ') {
         if (!running) {
             running = true;
@@ -199,11 +193,11 @@ function moveShape(direction) {
         };
         if (direction == 'down' || direction == 'up') {
             shapes[currentShapeIndex]['cells'][i]['coords'][1] += directions[direction];
-            shapes[currentShapeIndex]['cells'][i]['div'].style.top = shapes[currentShapeIndex]['cells'][i]['coords'][1] * cellSize + "px";
+            shapes[currentShapeIndex]['cells'][i]['div'].style.top = shapes[currentShapeIndex]['cells'][i]['coords'][1] * cellSize["height"] + "%";
         }
         else {
             shapes[currentShapeIndex]['cells'][i]['coords'][0] += directions[direction];
-            shapes[currentShapeIndex]['cells'][i]['div'].style.left = shapes[currentShapeIndex]['cells'][i]['coords'][0] * cellSize + "px";
+            shapes[currentShapeIndex]['cells'][i]['div'].style.left = shapes[currentShapeIndex]['cells'][i]['coords'][0] * cellSize["width"] + "%";
         }
     }
 }
@@ -242,8 +236,8 @@ function rotateShape(backwards) {
 
             shapes[currentShapeIndex]['cells'][i]['coords'][0] = x;
             shapes[currentShapeIndex]['cells'][i]['coords'][1] = y;
-            shapes[currentShapeIndex]['cells'][i]['div'].style.left = x * cellSize + "px";
-            shapes[currentShapeIndex]['cells'][i]['div'].style.top = y * cellSize + "px";
+            shapes[currentShapeIndex]['cells'][i]['div'].style.left = x * cellSize["width"] + "%";
+            shapes[currentShapeIndex]['cells'][i]['div'].style.top = y * cellSize["height"] + "%";
         }
     }
 }
@@ -311,7 +305,7 @@ function clearLines(lines) {
             for (c = 0; c < shapes[b]['cells'].length; c++) {
                 if (shapes[b]['cells'][c]['coords'][1] < lines[a]) {
                     shapes[b]['cells'][c]['coords'][1]++;
-                    shapes[b]['cells'][c]['div'].style.top = shapes[b]['cells'][c]['coords'][1] * cellSize + "px";
+                    shapes[b]['cells'][c]['div'].style.top = shapes[b]['cells'][c]['coords'][1] * cellSize["height"] + "%";
                 }
             }
         }

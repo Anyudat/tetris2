@@ -11,14 +11,18 @@ h1{
     position: absolute;
     left: calc(50% + 25vmin);
     top: 50%;
-    transform: translateY(-50%);
-    width: 20vmin;
-    height: 80vmin;
     font-size: clamp(1rem, 1vw, 2rem);
     text-align: center;
     background-color: black;
     color: white;
     border: 2px solid white;
+    z-index: 1;
+}
+
+#text, #nextShapeContainer{
+    transform: translateY(-50%);
+    width: 20vmin;
+    height: 80vmin;
 }
 
 #container , #placingContainer{
@@ -36,13 +40,11 @@ h1{
 }
 
 #nextShapeContainer{
+    z-index: 2;
     position: relative;
-    left: 0px;
-    top: 0px;
-    width: 20vmin;
-    height: 80vmin;
-    transform: translateX(-12vmin);
-    margin: auto;
+    height: 10vmin;
+    left: 50%;
+    top: 15%;
 }
 
 #placingContainer{
@@ -62,7 +64,14 @@ h1{
 }
 
 .cell{
-    border: 2px solid white;
+    border: 1px solid white;
     position: absolute;
     border-radius: 20% 20% 20% 20%;
+}
+
+.test{
+    position: absolute;
+    background-color: red;
+    border: 1px solid black;
+    margin: -1 -1;
 }
