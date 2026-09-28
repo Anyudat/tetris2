@@ -9,6 +9,11 @@ h1{
 
 #text{
     position: absolute;
+    left: calc(50% + 25vmin);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20vmin;
+    height: 80vmin;
     font-size: clamp(1rem, 1vw, 2rem);
     text-align: center;
     background-color: black;
@@ -16,16 +21,27 @@ h1{
     border: 2px solid white;
 }
 
-#container{
+#container , #placingContainer{
+    width: 40vmin;
+    height: 80vmin;
     position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#container{
     background-color: black;
     border: 2px solid white;
 }
 
 #nextShapeContainer{
     position: relative;
-    left: 0;
-    top: 0;
+    left: 0px;
+    top: 0px;
+    width: 20vmin;
+    height: 80vmin;
+    transform: translateX(-12vmin);
     margin: auto;
 }
 

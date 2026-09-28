@@ -11,8 +11,8 @@ const HEIGHT = 20;
 const WIDTH = 10;
 const borderSize = 2; // pixel
 const GAMESPEED = 500;
-
 const colors = ['lightblue', 'blue', 'orange', 'yellow', 'green', 'purple', 'red'];
+
 let shapes = [];
 let canRotate = true;
 let running = false;
@@ -31,30 +31,7 @@ let nextShapeColor;
 
 let placingShape;
 
-// set container size and location
-CONTAINER.style.height = window.innerHeight * 0.8 + HEIGHT * borderSize + "px";
-CONTAINER.style.width = window.innerHeight * 0.8 * WIDTH / HEIGHT + WIDTH * borderSize + "px";
-CONTAINER.style.left = (window.innerWidth - window.innerHeight * 0.8 * WIDTH / HEIGHT - WIDTH * borderSize) / 2 + "px";
-CONTAINER.style.top = window.innerHeight * 0.1 - HEIGHT * borderSize / 2 + "px";
-
-PLACINGCONTAINER.style.height = CONTAINER.style.height;
-PLACINGCONTAINER.style.width = CONTAINER.style.width;
-PLACINGCONTAINER.style.left = CONTAINER.style.left;
-PLACINGCONTAINER.style.top = CONTAINER.style.top;
-
-// put text on the side
-TEXT.style.left = (window.innerWidth + CONTAINER.clientWidth) / 2 + (window.innerWidth - CONTAINER.clientWidth) / 8 + "px";
-TEXT.style.width = (window.innerWidth - CONTAINER.clientWidth) / 4 + "px";
-TEXT.style.top = CONTAINER.style.top;
-
 cellSize = CONTAINER.clientWidth / WIDTH;
-
-// next shape container's size and location
-NEXTSHAPECONTAINER.style.left = "0px";
-NEXTSHAPECONTAINER.style.top = "0px";
-NEXTSHAPECONTAINER.style.width = 4 * cellSize + "px";
-NEXTSHAPECONTAINER.style.height = 4 * cellSize + "px";
-
 cellSize = parseFloat(CONTAINER.clientWidth / WIDTH);
 
 let SHAPECOORDS = {
