@@ -73,7 +73,7 @@ function createNextShape() {
     }
     nextShapeType = Object.keys(SHAPECOORDS)[Math.round(Math.random() * (Object.keys(SHAPECOORDS).length - 1))];
     nextShapeColor = colors[Math.round(Math.random() * (colors.length - 1))];
-    nextShape = createShape(nextShapeType, nextShapeColor, 5, 5, NEXTSHAPECONTAINER);
+    nextShape = createShape(nextShapeType, nextShapeColor, 4.5, 2, NEXTSHAPECONTAINER);
 }
 
 function createPlacingShape(){
@@ -88,17 +88,28 @@ function createPlacingShape(){
 function updatePlacingShape(){
     let currentCoords = [];
     let lowestCoords = [];
+    let collides = false;
 
     for (i = 0; i < shapes[currentShapeIndex]['cells'].length; i++){
-        currentCoords.push([shapes[currentShapeIndex]['cells'][i]['coords'][0], shapes[currentShapeIndex]['cells'][i]['coords'][1]]);
+        currentCoords.push([...shapes[currentShapeIndex]['cells'][i]['coords']]);
     }
 
-    while (!shapeCollision('down', 'up')){
+    while (!collides){
         lowestCoords = [];
         for (j = 0; j < shapes[currentShapeIndex]['cells'].length; j++){
-            lowestCoords.push(shapes[currentShapeIndex]['cells'][j]['coords']);
+            lowestCoords.push([...shapes[currentShapeIndex]['cells'][j]['coords']]);
         }
-        moveShape('down');
+
+        if (!shapeCollision('down', 'up')){
+            moveShape('down');
+        }
+        else{
+            collides = true;
+        }
+    }
+
+    if (lowestCoords.length == 0){
+        lowestCoords = [...currentCoords];
     }
 
     for (k = 0; k < currentCoords.length; k++){
@@ -112,12 +123,6 @@ function updatePlacingShape(){
     }
 }
 
-shapes.push(createShape(Object.keys(SHAPECOORDS)[Math.round(Math.random() * (Object.keys(SHAPECOORDS).length - 1))], colors[Math.round(Math.random() * (colors.length - 1))]));
-currentShapeIndex = 0;
-createNextShape();
-createPlacingShape();
-updatePlacingShape();
-
 window.addEventListener('keydown', (event) => {
     if (event.key == ' ') {
         if (!running) {
@@ -128,9 +133,6 @@ window.addEventListener('keydown', (event) => {
 
     // keybinds
     if (running && !paused) {
-        let canMoveLeft = true;
-        let canMoveRight = true;
-
         if (event.key == 'Escape'){
             paused = true;
             PAUSEMENU.style.display = 'block';
@@ -141,24 +143,14 @@ window.addEventListener('keydown', (event) => {
         }
 
         if (event.key == 'ArrowLeft' || event.key == 'a') {
-            for (i = 0; i < shapes[currentShapeIndex]['cells'].length; i++) {
-                if (shapes[currentShapeIndex]['cells'][i]['coords'][0] - 1 < 0) {
-                    canMoveLeft = false;
-                }
-            }
-            if (canMoveLeft && !shapeCollision('left', 'right')) {
+            if (!shapeCollision('left', 'right')) {
                 moveShape('left');
                 updatePlacingShape();
             }
         }
 
         if (event.key == 'ArrowRight' || event.key == 'd') {
-            for (j = 0; j < shapes[currentShapeIndex]['cells'].length; j++) {
-                if (shapes[currentShapeIndex]['cells'][j]['coords'][0] + 1 >= CONTAINER.clientWidth) {
-                    canMoveRight = false;
-                }
-            }
-            if (canMoveRight && !shapeCollision('right', 'left')) {
+            if (!shapeCollision('right', 'left')) {
                 moveShape('right');
                 updatePlacingShape();
             }
@@ -168,7 +160,8 @@ window.addEventListener('keydown', (event) => {
             rotateShape(false);
             if (shapeCollides()) {
                 rotateShape(true);
-            } else { // slow down rotation so there are no helicopters
+            } 
+            else { // slow down rotation so there are no helicopters
                 canRotate = false;
                 setTimeout(() => {
                     canRotate = true;
@@ -264,43 +257,68 @@ function checkFullLine() {
     return fullLines;
 }
 
+function getCountOfCells(){
+    let count = 0;
+    for (let y = 0; y < shapes.length; y++){
+        for (let x = 0; x < shapes[y]['cells'].length; x++){
+            count++;
+        }
+    }
+    return count;
+}
+
+function getClearedRowsCounts(lines){
+    lines.sort((a, b) => a - b) // ascending
+    let asd = [];
+    let count = 1;
+    for (let i = 0; i < lines.length; i++){
+        if (lines[i] + 1 == lines[i + 1]){
+            count++;
+        }
+        else{
+            asd.push(count);
+            count = 1;
+        }
+    }
+    if (count != 1){
+        asd.push(count);
+    }
+    return asd;
+}
+
 function clearLines(lines) {
     let perfectClearPoints = { 1: 800, 2: 1200, 3: 1800, 4: 2000 };
     let lineClearPoints = { 1: 100, 2: 300, 3: 500, 4: 800 };
     let lastLine = 0;
+    let cellCount = getCountOfCells();
 
-    // perfect line clears  
-    if (lines.length * WIDTH == shapes.length * shapes[0]['cells'].length) {
+    // points
+    if (lines.length * WIDTH == cellCount) {
         points += perfectClearPoints[lines.length];
-        points += lineClearPoints[lines.length];
+    }
+    else{
+        let clearedRowsCounts = getClearedRowsCounts(lines);
+    
+        clearedRowsCounts.forEach(row => {
+            points += lineClearPoints[row];
+        })
     }
 
-    lines.sort().reverse();
 
-    for (i = 0; i < lines.length; i++) {
-        for (j = shapes.length - 1; j >= 0; j--) {
-            for (k = shapes[j]['cells'].length - 1; k >= 0; k--) {
-                if (shapes[j]['cells'][k]['coords'][1] == lines[i]) {
-                    CONTAINER.removeChild(shapes[j]['cells'][k]['div']);
-                    shapes[j]['cells'].splice(k, 1);
-                }
-            }
-            if (shapes[j]['cells'].length == 0) {
-                shapes.splice(j, 1);
+    // remove all the cells in the filled rows
+    for (j = shapes.length - 1; j >= 0; j--) {
+        for (k = shapes[j]['cells'].length - 1; k >= 0; k--) {
+            if (lines.includes(shapes[j]['cells'][k]['coords'][1])) {
+                CONTAINER.removeChild(shapes[j]['cells'][k]['div']);
+                shapes[j]['cells'].splice(k, 1);
             }
         }
+        if (shapes[j]['cells'].length == 0) {
+            shapes.splice(j, 1);
+        }
     }
-
-    lines.reverse();
 
     for (a = 0; a < lines.length; a++) {
-        if (a > 0 && lines[a - 1] + 1 != lines[a]) { // 19 17 16
-            points += lineClearPoints[a];
-            lastLine = a;
-        }
-        else if (a == lines.length - 1) {
-            points += lineClearPoints[a - lastLine + 1];
-        }
         for (b = 0; b < shapes.length; b++) {
             for (c = 0; c < shapes[b]['cells'].length; c++) {
                 if (shapes[b]['cells'][c]['coords'][1] < lines[a]) {
@@ -317,9 +335,11 @@ function clearLines(lines) {
 function shapeCollision(movingDirection, oppositeDirection) {
 
     // collision with the bottom of the screen
-    for (i = 0; i < shapes[currentShapeIndex]['cells'].length; i++) {
-        if (shapes[currentShapeIndex]['cells'][i]['coords'][1] >= HEIGHT - 1) {
-            return true;
+    if (movingDirection == "down"){
+        for (i = 0; i < shapes[currentShapeIndex]['cells'].length; i++) {
+            if (shapes[currentShapeIndex]['cells'][i]['coords'][1] >= HEIGHT - 1) {
+                return true;
+            }
         }
     }
 
@@ -406,3 +426,9 @@ function gameOver() {
     createPlacingShape();
     updatePlacingShape();
 }
+
+shapes.push(createShape(Object.keys(SHAPECOORDS)[Math.round(Math.random() * (Object.keys(SHAPECOORDS).length - 1))], colors[Math.round(Math.random() * (colors.length - 1))]));
+currentShapeIndex = 0;
+createNextShape();
+createPlacingShape();
+updatePlacingShape();

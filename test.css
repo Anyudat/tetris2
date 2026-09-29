@@ -9,9 +9,12 @@ h1{
 
 #text{
     position: absolute;
+    transform: translateY(-50%);
+    width: 20vmin;
+    height: 80vmin;
     left: calc(50% + 25vmin);
     top: 50%;
-    font-size: clamp(1rem, 1vw, 2rem);
+    font-size: 2vmin;
     text-align: center;
     background-color: black;
     color: white;
@@ -19,13 +22,7 @@ h1{
     z-index: 1;
 }
 
-#text, #nextShapeContainer{
-    transform: translateY(-50%);
-    width: 20vmin;
-    height: 80vmin;
-}
-
-#container , #placingContainer{
+#container , #placingContainer, #nextShapeContainer{
     width: 40vmin;
     height: 80vmin;
     position: absolute;
@@ -41,16 +38,17 @@ h1{
 
 #nextShapeContainer{
     z-index: 2;
-    position: relative;
-    height: 10vmin;
-    left: 50%;
-    top: 15%;
+    left: calc(50%);
 }
 
 #placingContainer{
     position: absolute;
     margin: 2px;
     opacity: 0.2;
+}
+
+#title{
+    margin-bottom: 100%;
 }
 
 #pauseMenu{
