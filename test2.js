@@ -128,6 +128,7 @@ window.addEventListener('keydown', (event) => {
         if (!running) {
             running = true;
             game();
+            setTimeout(() => {GAMESPEED = 10}, 5000);
         }
     }
 
@@ -165,7 +166,7 @@ window.addEventListener('keydown', (event) => {
                 canRotate = false;
                 setTimeout(() => {
                     canRotate = true;
-                }, 200);
+                }, 70);
             }
             updatePlacingShape();
         }
