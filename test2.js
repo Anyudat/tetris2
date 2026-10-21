@@ -428,7 +428,7 @@ function gameOver() {
     updatePlacingShape();
 }
 
-shapes.push(createShape(Object.keys(SHAPECOORDS)[Math.round(Math.random() * (Object.keys(SHAPECOORDS).length - 1))], colors[Math.round(Math.random() * (colors.length - 1))]));
+shapes.push(createShape(['i','o','l','j','t'][Math.round(Math.random() * (['i','o','l','j','t'].length - 1))], colors[Math.round(Math.random() * (colors.length - 1))]));
 currentShapeIndex = 0;
 createNextShape();
 createPlacingShape();
