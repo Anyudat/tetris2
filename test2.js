@@ -32,13 +32,13 @@ let nextShapeColor;
 let placingShape;
 
 let SHAPECOORDS = {
-    'i': [[0, 0], [0, cellSize["height"]], [0, 2 * cellSize["height"]], [0, 3 * cellSize["height"]]],
-    'o': [[0, 0], [0, cellSize["height"]], [cellSize["width"], 0],      [cellSize["width"], cellSize["height"]]],
     's': [[0, 0], [0, cellSize["height"]], [cellSize["width"], 0],      [-cellSize["width"], cellSize["height"]]],
-    'z': [[0, 0], [0, cellSize["height"]], [-cellSize["width"], 0],     [cellSize["width"], cellSize["height"]]],
+    'o': [[0, 0], [0, cellSize["height"]], [cellSize["width"], 0],      [cellSize["width"], cellSize["height"]]],
+    'i': [[0, 0], [0, cellSize["height"]], [0, 2 * cellSize["height"]], [0, 3 * cellSize["height"]]],
     'l': [[0, 0], [0, cellSize["height"]], [0, 2 * cellSize["height"]], [cellSize["width"], 2 * cellSize["height"]]],
     'j': [[0, 0], [0, cellSize["height"]], [0, 2 * cellSize["height"]], [-cellSize["width"], 2 * cellSize["height"]]],
     't': [[0, cellSize["height"]], [0, 0], [-cellSize["width"], 0],     [cellSize["width"], 0]],
+    'z': [[0, 0], [0, cellSize["height"]], [-cellSize["width"], 0],     [cellSize["width"], cellSize["height"]]],
 };
 
 function createShape(shapeType, color, x = 5, y = 1, container = CONTAINER) {
